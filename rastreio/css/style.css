@@ -1,0 +1,77 @@
+/* Reset Básico */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Definir o layout de grid para o body */
+body {
+    font-family: Arial, sans-serif;
+}
+
+/* Estilo para o Header */
+.header {
+    background: #f3f3f3;
+    padding: 15px 0;
+    text-align: center;
+    border-bottom: 3px solid #21609c;
+}
+
+/* Estilo da Barra de Mensagem */
+div[style*="background-color: #21609c"] {
+    font-size: 1rem;
+    padding: 15px;
+}
+
+/* Layout Responsivo */
+@media (max-width: 768px) {
+    /* Imagens no Header */
+    .header img {
+        width: 80px; /* Ajusta a largura das imagens em telas menores */
+        margin-right: 20px;
+    }
+
+    /* Ajuste da grid para o conteúdo */
+    .main-content {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+
+    /* Alinha o conteúdo do produto */
+    .produto-info {
+        flex-direction: column; /* Organiza o conteúdo de forma vertical */
+        align-items: center; /* Centraliza o conteúdo */
+    }
+
+    /* Ajusta o texto do nome e descrição */
+    .produto-detalhes {
+        text-align: center; /* Alinha o texto no centro */
+        margin-left: 0;
+    }
+
+    /* Barra de mensagem */
+    div[style*="background-color: #21609c"] {
+        font-size: 1rem; /* Aumenta o tamanho da fonte */
+        padding: 15px;
+    }
+
+    /* Ajuste no grid */
+    .header {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding-left: 0;
+    }
+}
+
+/* Ajustes para telas ainda menores (dispositivos móveis muito pequenos) */
+@media (max-width: 480px) {
+    .produto-info {
+        padding: 10px;
+    }
+
+    .header img {
+        width: 70px;
+    }
+}
